@@ -1,9 +1,5 @@
 <h1>Proposal</h1>
 
-Propose time frame
-> 8 weeks
-> Gant chart - split up tasks (Can be BS)
-
 <h2>Outline of artefact</h2>
 
 Recent human events (The spread of Covid-19) have proven the effect the spread of a disease can have on:
