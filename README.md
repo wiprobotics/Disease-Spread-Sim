@@ -20,8 +20,6 @@ The proposed system will use a "Deep Reinforcement Learning"(DRL) model to provi
 
 In this project, Bowen et al. developed two agents tasked with playing the game hide-and-seek. These agents came up with many unique ideas (such as box surfing and using ramps) which Bowen did not programmatically incentivise. This system will aim to analyse emergent behaviour given the disease spread context. This would be done by simulating many different DRL agents who all want to avoid the disease for as long as possible while also keeping their other needs, for example; food and water met.
 
----
-
 <h2>UML Diagram / System architecture</h2>
 
 <img src="Resources/UML Diagram Updated.png" alt="UML diagram"> 
