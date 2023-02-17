@@ -46,6 +46,7 @@ On my search whether anyone else had made a genetic algorith I came across a you
 
 I tried to install this neural net library and just could not get it past the compiling stage. Sadly on the video the creator said this should be easy and just skipped over the setup section so I had no idea where to go to or what to do. So sadly I had to give up on this library.
 
+<h3><strong>5: Andrea Catania's youtube video and custom Godot</strong></h3>
 
 <h3>Citations</h3>
 
