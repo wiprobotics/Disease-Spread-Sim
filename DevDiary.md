@@ -64,7 +64,7 @@ I tried to install this neural net library and just could not get it past the co
 
 <h3 id="Era1Stage5"><strong>5: Andrea Catania's custom Godot Distribution</strong></h3>
 
-While looking at Mohsen Zare's video a different video by Andrea Catania [8] popped up. This video was about making a neural network to play tic tac toe however Andrea talked about how he had made a custom Godot distribution which made it way easier to use than installing my own custom modules. This was really interesting as I had been trying to install my own custom modules for the past few days and had not been able to get it to work.
+While looking at Mohsen Zare's video a different video by Andrea Catania [8] popped up. This video was about making a neural network to play tic tac toe however Andrea talked about how he had made a custom Godot distribution which made it way easier to use than installing my own custom modules. This was really interesting as I had been trying to install my own custom modules for the past few days and had not been able to get it to work. I managed to get the install done almost instantly and was able start looking into how to use it very quickly.
 
 The custom distribution included a module named "brain" which was a neural network library containing a node called "brain area" allowing for the easy implementation of neural networks.
 
@@ -78,4 +78,5 @@ The custom distribution included a module named "brain" which was a neural netwo
 <li>“Mohsen Zare,” YouTube. [Online]. Available: https://www.youtube.com/@mohsenzare2511. [Accessed: 13-Feb-2023].</li>
 <li>mohsenph69, “Mohsenph69/Godot-neural-networks: Provide a fast way to create neural networks for game AI in godotengine,” GitHub. [Online]. Available: https://github.com/mohsenph69/Godot-Neural-Networks. [Accessed: 13-Feb-2023].</li>
 <li>Godotengine, “Godotengine/Godot-CPP: C++ Bindings for the godot script api,” GitHub. [Online]. Available: https://github.com/godotengine/godot-cpp#getting-started. [Accessed: 13-Feb-2023].</li>
+<li>“Neural Network Creation in Godot - Tic Tac Toe #1,” YouTube, 17-Feb-2019. [Online]. Available: https://www.youtube.com/watch?v=hWP2_0u_BFM. [Accessed: 19-Feb-2023].</li>
 </ol>
