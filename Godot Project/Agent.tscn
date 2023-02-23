@@ -1,0 +1,26 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://sprites/pixil-frame-0.png" type="Texture" id=1]
+[ext_resource path="res://AgentBrain.gd" type="Script" id=2]
+
+[node name="Kinematic" type="KinematicBody2D"]
+
+[node name="Brain" type="UniformBrainArea" parent="."]
+input_layer_size = 9
+hidden_layers_count = 4
+output_layer_size = 441
+hidden_layer_0/size = 36
+hidden_layer_0/activation = 0
+hidden_layer_1/size = 36
+hidden_layer_1/activation = 0
+hidden_layer_2/size = 36
+hidden_layer_2/activation = 0
+hidden_layer_3/size = 36
+hidden_layer_3/activation = 0
+script = ExtResource( 2 )
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+polygon = PoolVector2Array( 20, 10, 10, 20, -10, 20, -20, 10, -20, -10, -10, -20, 10, -20, 20, -10 )
+
+[node name="pixil-frame-0" type="Sprite" parent="."]
+texture = ExtResource( 1 )

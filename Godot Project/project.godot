@@ -16,7 +16,14 @@ _global_script_class_icons={
 [application]
 
 config/name="Comp250"
+run/main_scene="res://Node2D.tscn"
 config/icon="res://icon.png"
+
+[display]
+
+window/size/resizable=false
+window/size/test_width=1024
+window/size/test_height=600
 
 [rendering]
 
