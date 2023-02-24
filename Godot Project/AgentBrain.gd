@@ -9,7 +9,12 @@ var startposition
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	print("Agent Instantiated")
+	pass
+	# print("Agent Instantiated")
+	
+func movetostartpos(x, y):
+	print("Spawn pos: " + str(x) + "," + str(y))
+	get_parent().set_position(Vector2(x, y))
 	
 func getposition():
 	currentpos = get_parent().get_position()
