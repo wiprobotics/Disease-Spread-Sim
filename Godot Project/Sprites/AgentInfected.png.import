@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/pixil-frame-0(1).png-4df926fd479f52e9d334e9229b26249a.stex"
+path="res://.import/AgentInfected.png-fa7b559f09c09dba6ae0cb5adb5ca99e.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sprites/pixil-frame-0(1).png"
-dest_files=[ "res://.import/pixil-frame-0(1).png-4df926fd479f52e9d334e9229b26249a.stex" ]
+source_file="res://Sprites/AgentInfected.png"
+dest_files=[ "res://.import/AgentInfected.png-fa7b559f09c09dba6ae0cb5adb5ca99e.stex" ]
 
 [params]
 

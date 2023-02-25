@@ -10,7 +10,7 @@ My artefact will be a multi agent system which will be used to simulate and prev
 
 <h2><strong>Table of contents</strong></h2>
 <ol>
-<li><a href="#Era1">Era1</a></li>
+<li><a href="#Era1">Era1: Deciding which AI to use (Research)</a></li>
     <ol>
     <li><a href="#Era1Changes">Changes</a></li>
     <li><a href="#Era1Intro">Introduction</a></li>
@@ -19,6 +19,11 @@ My artefact will be a multi agent system which will be used to simulate and prev
     <li><a href="#Era1Stage3">NAD LABS youtube video</a></li>
     <li><a href="#Era1Stage4">Mohsen Zare GDNative neural net library</a></li>
     <li><a href="#Era1Stage5">Andrea Catania's custom Godot Distribution</a></li>
+    </ol>
+<li><a href="#Era2">Era2: Developing the agents (practical)</a></li>
+    <ol>
+    <li><a href="#Era2Changes">Changes</a></li>
+    <li><a href="#Era2Intro">Introduction</a></li>
     </ol>
 </ol>
 
@@ -30,7 +35,6 @@ My artefact will be a multi agent system which will be used to simulate and prev
 </ul>
 
 <h3 id="Era1Intro"><strong>Introduction to era</strong></h3>
-<div>
 The main goal of this era was to decide which AI to use for the project. There are a few requirements I had for the AI, these were:
 <ul>
 <li>It must be able to be used in a 2D top down environment, as I dont want to make a whole 3d environment</li>
@@ -68,6 +72,8 @@ While looking at Mohsen Zare's video a different video by Andrea Catania [8] pop
 
 The custom distribution included a module named "brain" which was a neural network library containing a node called "brain area" allowing for the easy implementation of neural networks.
 
+After initial research into this library I made the decision to use it for the full project. This was because it was very easy to use and had a few well thought out youtube tutorials to help me.
+
 <h3 id="Era1Citations">Citations</h3>
 
 <ol>
@@ -81,3 +87,91 @@ The custom distribution included a module named "brain" which was a neural netwo
 <li>“Neural Network Creation in Godot - Tic Tac Toe #1,” YouTube, 17-Feb-2019. [Online]. Available: https://www.youtube.com/watch?v=hWP2_0u_BFM. [Accessed: 20-Feb-2023].</li>
 <li>AndreaCatania, “Andreacatania/Godot at brain,” GitHub. [Online]. Available: https://github.com/AndreaCatania/godot/tree/brain. [Accessed: 20-Feb-2023].</li>
 </ol>
+
+<h2 id="Era2"><strong>Era 2: Developing the agents (practical)</strong></h2>
+
+<h3 id="Era2Changes"><strong>Changes made</strong></h3>
+<ul>
+<li>Developed the individual agent classes for the project</li>
+<li>Developed the agent neural network class</li>
+<li>Developed the functionality to spawn in agents</li>
+<li>Developed the functionality to kill agents</li>
+</ul>
+
+<h3 id="Era2Intro"><strong>Introduction to era</strong></h3>
+The main goal of this era was to get the individual agents into the project and get them moving in the space. This meant I had to develop an agent class which I could instantiate multiple times to make the spawning and controlling of the agents easier. This class was a very important part of the project as the genetic algorithm had nothing to work off if there was no neural net. 
+
+The agent class was also responsible for the movement of the agents. This would have to be controlled by a kinematic body however I wanted all the code to be in one GDscript file to make talking to the individual agents easier.
+
+<h3 id="Era2Stage1"><strong>1: Creating the godot object</strong></h3>
+
+All previous experience I had with game engines and dynamic creation of objects had come from unity and c#. I initially thought this meant I had to learn a whole new way of creating and instantiating objects. However after looking into it the methodology was very similar to unity. To create a instantiatable object in godot all I had to do was make a scene file and then use ```preload("Scene Name")``` to load the scene into a variable and then use ```instance()``` to create a new instance of that scene. This meant the learning curve of creating the agents was very small.
+
+The other main area I had to focus on in the early development of this era was the actual game objects (Nodes in Godot) I was using to create these objects. Each agent would have to have a few key components to it. These components were a kinematic body, a collision shape, a sprite and a "brain area". All these nodes would be essential for running the object however as I stated earlier I wanted to keep all the code to one game object, the "brain area". This meant everytime I wanted to move the agent I would have to use ```get_parent()``` to get the kinematic body and then use that to move the agent. This was a bit of a pain but I was able to get it working.
+
+Here is the layout for the agent scene file and also the sprite I used to represent the agents:
+
+<img src="Resources/Agent Scene.png" alt="Agent Scene File">
+
+And here is the initial code for the agent class, currently only set to move in random directions:
+
+```extends UniformBrainArea
+
+var currentpos = Vector2(0,0)
+var targetpos = Vector2(0,0)
+var SPEED = 100
+var vector
+var rng = RandomNumberGenerator.new()
+var startposition
+
+# Called when the node enters the scene tree for the first time, currently does nothing.
+func _ready():
+	pass
+	# print("Agent Instantiated")
+	
+# Moves agent to set start position to make it look nicer and train more effectively
+func movetostartpos(x, y):
+	print("Spawn pos: " + str(x) + "," + str(y))
+	get_parent().set_position(Vector2(x, y))
+	
+# Gets the current position of the kinematic body and returns it
+func getposition():
+	currentpos = get_parent().get_position()
+
+# Sets a target position for the agent to move towards
+func updatetargetposition(x,y):
+	targetpos = currentpos + Vector2(x, y)
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	# Get random directions to move in
+	rng.randomize()
+	var movementx = rng.randf_range(-1000, 1000)
+	var movementy = rng.randf_range(-1000, 1000)
+	getposition()
+	updatetargetposition(movementx, movementy)
+	vector = (targetpos - currentpos).normalized()
+	# Move the kinematic body towards the target
+	get_parent().move_and_collide(vector * SPEED * delta)
+```
+One interesting element is the ```move_and_collide``` function. This function is used to move the kinematic body and also check for collisions. This is very useful as it means I can check for collisions automatically and not have to worry whether the agents are going to go off the screen or not.
+
+<h3 id="Era2Stage2"><strong>2: Instantiating the objects in the main scene</strong></h3>
+To dynamically create the agents I had to create an object which would instantiate them, to simplify code and keep it easy to access I created a "EnvController" object. This object would control all parts of the enviroment:
+<ul>
+<li>Spawning in the agents</li>
+<li>Killing the agents</li>
+<li>Spawning in the food</li>
+<li>Spawning in the water</li>
+<li>Spawning in walls to stop the agents from going off the screen</li>
+</ul>
+
+To spawn in the agents I used the following code:
+```var agentholder = preload("res://Prefabs/Agent.tscn")
+var temp = agentholder.instance()
+var agentbrain = temp.get_node("Brain")
+agents.append(temp)
+agentbrains.append(agentbrain)
+self.add_child(temp)
+```
+This code is very simple and just loads the agent scene file, creates an instance of it and then adds it to the scene. The preload function is very helpful as it allows us to load the scene file once and instance it multiple times. This is very useful as it means we don't have to load the scene file every time we want to create an agent.
