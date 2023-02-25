@@ -24,6 +24,8 @@ My artefact will be a multi agent system which will be used to simulate and prev
     <ol>
     <li><a href="#Era2Changes">Changes</a></li>
     <li><a href="#Era2Intro">Introduction</a></li>
+    <li><a href="#Era2Stage1">Creating the godot object</a></li>
+    <li><a href="#Era2Stage2">Instantiating the objects in the main scene</a></li>
     </ol>
 </ol>
 
