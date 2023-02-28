@@ -8,6 +8,9 @@ For each era, I will include a description of the changes made, a reflection on 
 
 My artefact will be a multi agent system which will be used to simulate and prevent the spread of disease through a population. The system will be comprised of two components a neural network and a genetic algorithm. To make my life easier and to prevent over scoping I intend to not build my own neural network and instead intend to use a prebuilt library. My main contribution will be the devlopment of the genetic algorithm.
 
+The link to this project is here: <a href="https://github.falmouth.ac.uk/JA244121/Comp250-JA244121">Project github</a>
+(Though its very possible you are already on this page)
+
 <h2><strong>Table of contents</strong></h2>
 <ol>
 <li><a href="#Era1">Era1: Deciding which AI to use (Research)</a></li>
@@ -26,6 +29,7 @@ My artefact will be a multi agent system which will be used to simulate and prev
     <li><a href="#Era2Intro">Introduction</a></li>
     <li><a href="#Era2Stage1">Creating the godot object</a></li>
     <li><a href="#Era2Stage2">Instantiating the objects in the main scene</a></li>
+    <li><a href="#Era2Stage3">Instantiating the objects in the main scene</a></li>
     </ol>
 </ol>
 
@@ -117,7 +121,8 @@ Here is the layout for the agent scene file and also the sprite I used to repres
 
 And here is the initial code for the agent class, currently only set to move in random directions:
 
-```extends UniformBrainArea
+```
+extends UniformBrainArea
 
 var currentpos = Vector2(0,0)
 var targetpos = Vector2(0,0)
@@ -169,7 +174,8 @@ To dynamically create the agents I had to create an object which would instantia
 </ul>
 
 To spawn in the agents I used the following code:
-```var agentholder = preload("res://Prefabs/Agent.tscn")
+```
+var agentholder = preload("res://Prefabs/Agent.tscn")
 var temp = agentholder.instance()
 var agentbrain = temp.get_node("Brain")
 agents.append(temp)
@@ -177,3 +183,62 @@ agentbrains.append(agentbrain)
 self.add_child(temp)
 ```
 This code is very simple and just loads the agent scene file, creates an instance of it and then adds it to the scene. The preload function is very helpful as it allows us to load the scene file once and instance it multiple times. This is very useful as it means we don't have to load the scene file every time we want to create an agent.
+
+To make sure the agents are properly distributed over the environment I spawned them on a grid with reference to the size of the environment. This meant I could easily change the size of the environment and the agents would still be spawned in a nice grid. The code to declare the grid is as follows:
+```	
+# Map out a grid to spawn the agents into
+var gridsize = sqrt(noAgents)
+gridsize = round(gridsize) + 2
+var step = Vector2(round((get_viewport_rect().size.x) / gridsize), round((get_viewport_rect().size.y) / gridsize))
+```
+Where noAgents is the number of agents to spawn in and the step variable declares the space between each agent. The code then moves each of the agents to their position on the grid:
+```
+# Set the start grid position
+var spawnpos = Vector2(step.x, step.y) 
+agentbrain.movetostartpos(spawnpos.x, spawnpos.y, i)
+# Step to the next grid position in x
+spawnpos.x = spawnpos.x + step.x 
+# If the next grid position is off the screen move to the next row
+if spawnpos.x > get_viewport_rect().size.x - step.x: 
+	spawnpos.x = step.x
+	spawnpos.y = spawnpos.y + step.y
+```
+
+Once this system was incorporated the spawned in agents looked like this on the grid:
+<img src="Resources/AgentsOnGrid.png" alt="Agents Lined Up in a Grid">
+
+And here is another photo proving that the grid system dynamically changes with the amount of agents spawned (60 vs 200):
+<img src="Resources/200Agents.png" alt="Agents Lined Up in a Grid">
+
+The full code for the spawning of the agents is here:
+```
+func spawnagents():
+    # Map out a grid to spawn the agents into
+	var gridsize = sqrt(noAgents)
+	gridsize = round(gridsize) + 2
+	var step = Vector2(round((get_viewport_rect().size.x) / gridsize), round((get_viewport_rect().size.y) / gridsize))
+	
+	# Spawn the agents
+	var spawnpos = Vector2(step.x, step.y)
+	# instances
+	for i in range(noAgents):
+		var temp = agentholder.instance()
+		var agentbrain = temp.get_node("Brain")
+		globals.agents.append(temp)
+		globals.agentbrains.append(agentbrain)
+		self.add_child(temp)
+		agentbrain.movetostartpos(spawnpos.x, spawnpos.y, i)
+		spawnpos.x = spawnpos.x + step.x
+		if spawnpos.x > get_viewport_rect().size.x - step.x:
+			spawnpos.x = step.x
+			spawnpos.y = spawnpos.y + step.y
+```
+
+Finally for a bit of fun I got the agents to spawn in and move via Brownian motion. This means that the agents will move in a completely random direction which can change every time the system runs through the loop. Here's a gif of the agents moving in Brownian motion:
+<img src="Resources/BrownianMotion.gif" alt="Agents Moving in Brownian Motion">
+
+<h3 id="Era2Stage3"><strong>3: Spawning in food and water systems</strong></h3>
+
+<h3 id="Era2Stage4"><strong>4: Implementing Infection systems and spawning infector</strong></h3>
+
+<h3 id="Era2Stage5"><strong>5: Moving variable storage to globals</strong></h3>

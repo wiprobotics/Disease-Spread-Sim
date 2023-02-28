@@ -77,15 +77,18 @@ func _process(delta):
 				if distance < closest:
 					closestagent = globals.agents[i]
 					closest = distance
-					
 			i = i+1
 			
 		if closestagent != null:
 			vector = (closestagent.global_position - currentpos).normalized()
 		else:
-			randommove()
+			if globals.randommovement == true:
+				randommove()
 	
 	else:
-		randommove()
-	# Move the kinematic body towards the target
-	get_parent().move_and_collide(vector * SPEED * delta)
+		if globals.randommovement == true:
+			randommove()
+			
+	if vector != null:
+		# Move the kinematic body towards the target
+		get_parent().move_and_collide(vector * SPEED * delta)

@@ -2,7 +2,7 @@ extends Node2D
 var agents = []
 var agentbrains = []
 var walls = []
-var noAgents = 60
+var noAgents
 var wallstarts = []
 var wallrotations = []
 
@@ -25,6 +25,7 @@ func _ready():
 		spawninfector()
 
 func spawnagents():
+	noAgents = globals.numberofagents
 	# Map out a grid to spawn the agents into
 	var gridsize = sqrt(noAgents)
 	gridsize = round(gridsize) + 2
