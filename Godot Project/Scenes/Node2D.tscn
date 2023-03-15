@@ -1,9 +1,11 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=5 format=2]
 
+[ext_resource path="res://Scripts/UI.gd" type="Script" id=1]
 [ext_resource path="res://Scripts/EnvController.gd" type="Script" id=2]
+[ext_resource path="res://Scripts/Genetic Controller.gd" type="Script" id=3]
 [ext_resource path="res://Scripts/Global.gd" type="Script" id=4]
 
-[node name="Node2D" type="Node2D"]
+[node name="Root" type="Node2D"]
 
 [node name="EnvController" type="Node2D" parent="."]
 script = ExtResource( 2 )
@@ -13,3 +15,130 @@ anchor_mode = 0
 
 [node name="Global" type="Node2D" parent="."]
 script = ExtResource( 4 )
+
+[node name="Genetic Controller" type="Node2D" parent="."]
+script = ExtResource( 3 )
+
+[node name="Waitforfree" type="Timer" parent="Genetic Controller"]
+
+[node name="UI" type="PanelContainer" parent="."]
+margin_right = 160.0
+margin_bottom = 28.0
+script = ExtResource( 1 )
+
+[node name="GridContainer" type="GridContainer" parent="UI"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 153.0
+margin_bottom = 93.0
+
+[node name="Timer" type="HBoxContainer" parent="UI/GridContainer"]
+margin_right = 123.0
+margin_bottom = 14.0
+
+[node name="Title" type="VBoxContainer" parent="UI/GridContainer/Timer"]
+margin_right = 64.0
+margin_bottom = 14.0
+
+[node name="Label" type="Label" parent="UI/GridContainer/Timer/Title"]
+margin_right = 64.0
+margin_bottom = 14.0
+text = "Time Left:"
+
+[node name="Counter" type="VBoxContainer" parent="UI/GridContainer/Timer"]
+margin_left = 68.0
+margin_right = 68.0
+margin_bottom = 14.0
+
+[node name="Label" type="Label" parent="UI/GridContainer/Timer/Counter"]
+margin_bottom = 14.0
+
+[node name="Timer" type="Timer" parent="UI/GridContainer/Timer/Counter/Label"]
+
+[node name="AgentsCounter" type="HBoxContainer" parent="UI/GridContainer"]
+margin_top = 18.0
+margin_right = 123.0
+margin_bottom = 32.0
+
+[node name="Title" type="VBoxContainer" parent="UI/GridContainer/AgentsCounter"]
+margin_right = 119.0
+margin_bottom = 14.0
+
+[node name="Label" type="Label" parent="UI/GridContainer/AgentsCounter/Title"]
+margin_right = 119.0
+margin_bottom = 14.0
+text = "Agents Remaining:"
+
+[node name="Counter" type="VBoxContainer" parent="UI/GridContainer/AgentsCounter"]
+margin_left = 123.0
+margin_right = 123.0
+margin_bottom = 14.0
+
+[node name="Label" type="Label" parent="UI/GridContainer/AgentsCounter/Counter"]
+margin_bottom = 14.0
+
+[node name="InfectedCounter" type="HBoxContainer" parent="UI/GridContainer"]
+margin_top = 36.0
+margin_right = 123.0
+margin_bottom = 50.0
+
+[node name="Title" type="VBoxContainer" parent="UI/GridContainer/InfectedCounter"]
+margin_right = 105.0
+margin_bottom = 14.0
+
+[node name="Label" type="Label" parent="UI/GridContainer/InfectedCounter/Title"]
+margin_right = 105.0
+margin_bottom = 14.0
+text = "Infected Agents:"
+
+[node name="Counter" type="VBoxContainer" parent="UI/GridContainer/InfectedCounter"]
+margin_left = 109.0
+margin_right = 109.0
+margin_bottom = 14.0
+
+[node name="Label" type="Label" parent="UI/GridContainer/InfectedCounter/Counter"]
+margin_bottom = 14.0
+
+[node name="EpochCounter" type="HBoxContainer" parent="UI/GridContainer"]
+margin_top = 54.0
+margin_right = 123.0
+margin_bottom = 68.0
+
+[node name="Title" type="VBoxContainer" parent="UI/GridContainer/EpochCounter"]
+margin_right = 77.0
+margin_bottom = 14.0
+
+[node name="Label" type="Label" parent="UI/GridContainer/EpochCounter/Title"]
+margin_right = 77.0
+margin_bottom = 14.0
+text = "Epochs Run:"
+
+[node name="Counter" type="VBoxContainer" parent="UI/GridContainer/EpochCounter"]
+margin_left = 81.0
+margin_right = 81.0
+margin_bottom = 14.0
+
+[node name="Label" type="Label" parent="UI/GridContainer/EpochCounter/Counter"]
+margin_bottom = 14.0
+
+[node name="BestAgent" type="HBoxContainer" parent="UI/GridContainer"]
+margin_top = 72.0
+margin_right = 123.0
+margin_bottom = 86.0
+
+[node name="Title" type="VBoxContainer" parent="UI/GridContainer/BestAgent"]
+margin_right = 74.0
+margin_bottom = 14.0
+
+[node name="Label" type="Label" parent="UI/GridContainer/BestAgent/Title"]
+margin_right = 74.0
+margin_bottom = 14.0
+text = "Best Agent:"
+
+[node name="Counter" type="VBoxContainer" parent="UI/GridContainer/BestAgent"]
+margin_left = 78.0
+margin_right = 78.0
+margin_bottom = 14.0
+
+[node name="Label" type="Label" parent="UI/GridContainer/BestAgent/Counter"]
+margin_bottom = 14.0

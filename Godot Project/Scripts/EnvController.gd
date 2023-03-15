@@ -1,46 +1,54 @@
 extends Node2D
-var agents = []
-var agentbrains = []
-var walls = []
 var noAgents
-var wallstarts = []
-var wallrotations = []
+var wallStarts = []
+var wallRotations = []
+var firstRun = true
+var rng = RandomNumberGenerator.new()
+var feedData = []
 
-var agentholder = preload("res://Prefabs/Agent.tscn")
-var wallholder = preload("res://Prefabs/Wall.tscn")
-var foodholder = preload("res://Prefabs/Food Bank.tscn")
-var waterholder = preload("res://Prefabs/Watering Hole.tscn")
-var infectorholder = preload("res://Prefabs/Infector.tscn")
+var agentHolder = preload("res://Prefabs/Agent.tscn")
+var wallHolder = preload("res://Prefabs/Wall.tscn")
+var foodHolder = preload("res://Prefabs/Food Bank.tscn")
+var waterHolder = preload("res://Prefabs/Watering Hole.tscn")
+var infectorHolder = preload("res://Prefabs/Infector.tscn")
 
 onready var globals = get_tree().current_scene.get_node("Global")
 
-func _ready():
-	spawnagents()
-	spawnwalls()
-	if globals.foodenabled == true:
+func instance_environment(randomMultipliers, feedMultipliers):
+	if globals.foodEnabled == true:
 		spawnfood()
-	if globals.waterenabled == true:
+	if globals.waterEnabled == true:
 		spawnwater()
-	if globals.infectorenabled == true:
+	if globals.infectorEnabled == true:
 		spawninfector()
+	spawnagents(randomMultipliers, feedMultipliers)
+	spawnwalls()
 
-func spawnagents():
-	noAgents = globals.numberofagents
+func spawnagents(randomMultipliers, feedMultipliers):
+	noAgents = globals.numberOfAgents
 	# Map out a grid to spawn the agents into
-	var gridsize = sqrt(noAgents)
-	gridsize = round(gridsize) + 2
-	var step = Vector2(round((get_viewport_rect().size.x) / gridsize), round((get_viewport_rect().size.y) / gridsize))
+	var gridSize = sqrt(noAgents)
+	gridSize = round(gridSize) + 2
+	var step = Vector2(round((get_viewport_rect().size.x) / gridSize), round((get_viewport_rect().size.y) / gridSize))
 	
 	# Spawn the agents
 	var spawnpos = Vector2(step.x, step.y)
 	# instances
 	for i in range(noAgents):
-		var temp = agentholder.instance()
-		var agentbrain = temp.get_node("Brain")
-		globals.agents.append(temp)
-		globals.agentbrains.append(agentbrain)
-		self.add_child(temp)
-		agentbrain.movetostartpos(spawnpos.x, spawnpos.y, i)
+		var agent = agentHolder.instance()
+		var agentBrain = agent.get_node("Brain")
+		globals.agents.append(agent)
+		globals.agentBrains.append(agentBrain)
+		globals.notInfected.append(agent)
+		self.add_child(agent)
+		if randomMultipliers == true:
+			rng.randomize()
+			feedData = [rng.randf_range(0, 100), rng.randf_range(0, 100), rng.randf_range(0, 100), rng.randf_range(0, 100), 
+			rng.randf_range(0, 100), rng.randf_range(0, 100), rng.randf_range(0, 100), rng.randf_range(0, 100),
+			rng.randf_range(0, 100), rng.randf_range(0, 100), rng.randf_range(0, 100), 0]
+		else:
+			feedData = feedMultipliers[i]
+		agentBrain.movetostartpos(spawnpos.x, spawnpos.y, i, feedData)
 		spawnpos.x = spawnpos.x + step.x
 		if spawnpos.x > get_viewport_rect().size.x - step.x:
 			spawnpos.x = step.x
@@ -50,32 +58,37 @@ func spawnwalls():
 	# Spawn in the 4 external walls to ensure the Agents cant escape
 	declarewallstarts()
 	for i in range(4):
-		var temp = wallholder.instance()
+		var temp = wallHolder.instance()
 		self.add_child(temp)
-		temp.movetostartpos(wallstarts[i].x, wallstarts[i].y, wallrotations[i])
+		temp.movetostartpos(wallStarts[i].x, wallStarts[i].y, wallRotations[i])
 		
 func spawnfood():
-	var food = foodholder.instance()
+	var food = foodHolder.instance()
 	self.add_child(food)
-	food.movetostartpos(round(get_viewport_rect().size.x * 0.3), round(get_viewport_rect().size.y * 0.5), 0)
+	var spawnpos = Vector2(round(get_viewport_rect().size.x * 0.3), round(get_viewport_rect().size.y * 0.5))
+	food.movetostartpos(spawnpos.x, spawnpos.y, 0)
+	globals.foodLocation = spawnpos
 	
 func spawnwater():
-	var water = waterholder.instance()
+	var water = waterHolder.instance()
 	self.add_child(water)
-	water.movetostartpos(round(get_viewport_rect().size.x * 0.6), round(get_viewport_rect().size.y * 0.5), 0)
+	var spawnpos = Vector2(round(get_viewport_rect().size.x * 0.6), round(get_viewport_rect().size.y * 0.5))
+	water.movetostartpos(spawnpos.x, spawnpos.y, 0)
+	globals.waterLocation = spawnpos
 	
 func spawninfector():
-	var infector = infectorholder.instance()
+	var infector = infectorHolder.instance()
 	self.add_child(infector)
 	infector.movetostartpos(round(get_viewport_rect().size.x * 0.5), round(get_viewport_rect().size.y * 0.5), 0)
+	globals.infected.append(infector)
 
 # Sets the locations for all the walls to go to
 func declarewallstarts():
-	wallstarts.append(Vector2(0, get_viewport_rect().size.y/2))
-	wallstarts.append(Vector2(get_viewport_rect().size.x, get_viewport_rect().size.y/2))
-	wallstarts.append(Vector2(get_viewport_rect().size.x/2, 0))
-	wallstarts.append(Vector2(get_viewport_rect().size.x/2, get_viewport_rect().size.y))
-	wallrotations = [0, 0, 90, 90]
+	wallStarts.append(Vector2(0, get_viewport_rect().size.y/2))
+	wallStarts.append(Vector2(get_viewport_rect().size.x, get_viewport_rect().size.y/2))
+	wallStarts.append(Vector2(get_viewport_rect().size.x/2, 0))
+	wallStarts.append(Vector2(get_viewport_rect().size.x/2, get_viewport_rect().size.y))
+	wallRotations = [0, 0, 90, 90]
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):

@@ -1,5 +1,7 @@
 <h1><strong>Dev diary for the production of my COMP250 artefact</strong></h1>
 
+By James Absolom
+
 <h2><strong>Introduction</strong></h2>
 
 This is a diary of my development process for my COMP250 artefact. I will be using this diary to keep track of my progress and to reflect on my development process. This diary will be split into eras, each of which will be a separate section. The eras will be split by major changes in the creation of the project, such as the addition of a new feature or the completion of a major milestone.
@@ -13,6 +15,12 @@ The link to this project is here: <a href="https://github.falmouth.ac.uk/JA24412
 
 <h2><strong>Table of contents</strong></h2>
 <ol>
+<li><a href="#Proposal">Proposal</a></li>
+	<ol>
+    <li><a href="#ProposalOutline">Outline of artefact</a></li>
+	<li><a href="#ProposalArchitecture">UML Diagram / System architecture</a></li>
+	<li><a href="#ProposalGantt">Gantt Chart</a></li>
+    </ol>
 <li><a href="#Era1">Era1: Deciding which AI to use (Research)</a></li>
     <ol>
     <li><a href="#Era1Changes">Changes</a></li>
@@ -23,14 +31,108 @@ The link to this project is here: <a href="https://github.falmouth.ac.uk/JA24412
     <li><a href="#Era1Stage4">Mohsen Zare GDNative neural net library</a></li>
     <li><a href="#Era1Stage5">Andrea Catania's custom Godot Distribution</a></li>
     </ol>
-<li><a href="#Era2">Era2: Developing the agents (practical)</a></li>
+<li><a href="#Era2">Era2: Developing the environment and spawning agents (practical)</a></li>
     <ol>
     <li><a href="#Era2Changes">Changes</a></li>
     <li><a href="#Era2Intro">Introduction</a></li>
     <li><a href="#Era2Stage1">Creating the godot object</a></li>
     <li><a href="#Era2Stage2">Instantiating the objects in the main scene</a></li>
-    <li><a href="#Era2Stage3">Instantiating the objects in the main scene</a></li>
+    <li><a href="#Era2Stage3">Developing the environment (food, water and walls)</a></li>
+    <li><a href="#Era2Stage4">Implementing Infection systems and spawning infector</a></li>
+    <li><a href="#Era2Stage5">Moving variable storage to globals</a></li>
+	<li><a href="#Era2Stage6">Getting other agent distances and optimising</a></li>
     </ol>
+<li><a href="#Era3">Era3: Changing AI methodology ... Again (Research)</a></li>
+    <ol>
+    <li><a href="#Era3Changes">Changes</a></li>
+    <li><a href="#Era3Intro">Introduction</a></li>
+	<li><a href="#Era3Stage1">What is NEAT?</a></li>
+	</ol>
+</ol>
+
+<h2 id="Proposal"><strong>Proposal</strong></h2>
+
+<h3 id="ProposalOutline"><strong>Outline of artefact</strong></h3>
+
+Recent human events (The spread of Covid-19) have proven the effect the spread of a disease can have on:
+<ul>
+<li>The healthcare system [1]</li>
+<li>Mental health [2]</li>
+<li>The economy [3]</li>
+<li>Globalisation [4]</li>
+</ul>
+
+This means it's important to come up with new ideas for keeping populations safe from disease. One way of doing this is to use mathematical models to simulate the spread of disease. This was done in the UK with the "Track and Trace" [5] system, which used mathematical models to predict the spread of the disease. This information was then used by the government to make an informed decision on actions to slow the spread of COVID-19.
+
+The proposed system will use a "Deep Reinforcement Learning"(DRL) model to provide novel solutions and strategies for preventing the spread of infectious diseases. In the past DRL has proven its ability to develop emergent behaviour, one example of this is OpenAI's hide-and-seek project [7].
+
+<img src="Resources/OpenAIHideSeek.png" alt="Open AI Hide-and-Seek" width="300" height="200">
+
+<i> Fig 1 - OpenAI's hide-and-seek project </i>
+
+In this project, Bowen et al. developed two agents tasked with playing the game hide-and-seek. These agents came up with many unique ideas (such as box surfing and using ramps) which Bowen did not programmatically incentivise. This system will aim to analyse emergent behaviour given the disease spread context. This would be done by simulating many different DRL agents who all want to avoid the disease for as long as possible while also keeping their other needs, for example; food and water met.
+
+<h3 id="ProposalArchitecture"><strong>UML Diagram / System architecture</strong></h3>
+
+<img src="Resources/UML Diagram Updated.png" alt="UML diagram"> 
+
+<i> Fig 2 - UML diagram for the proposed system </i>
+
+This proposed system would use reinforcement learning which will be built using PyGame Learning Environment (PLE) [6], where the agents will be rewarded for surviving but punished for dying by any means e.g food, water or infection. This would allow the agents to build a neural net allowing them to learn how to avoid the disease. The use of PLE will also allow us to visualize the system to see how the agents are behaving.
+
+The system will be trained in rounds lasting an amount of time set by the user. Each round will start with an infection starter pawn being put into the system. This pawn will not be advanced and will just pick a random direction and move in it and change direction every few seconds.
+
+To accurately simulate real-life scenarios the disease will have an incubation time (r-value) which will be default set to 1.1 (between 1.0 and 1.2) as that is the r-value of Covid-19 [8] however this value can be changed by the user for other simulations. While the incubation time is active the infected will be able to infect others but will not be visibly infected. To also simulate real-life scenarios the agents will only be able to tell if someone is infected past the incubation time as it is common to be asymptomatic during the incubation period. Once an agent is infected it will continue its daily routine but will be able to infect others. The other parallel to real life is that the agents will have to consume food and water which they will have to collect from central points, this is designed to simulate the supermarkets and gathering points we have in real life.
+
+There will be several variables in the system which will determine both agent actions and the spread of the disease. These inputs will be:
+<ul>
+<li> Variables to control disease spread (most can be enabled/disabled by the user):
+<ul>
+<li> Rest period (how long after getting the disease before you can spread it)</li>
+<li> Incubation time (how long before you show symptoms)</li>
+<li> Transmission distance (distance at which you're susceptible to infection)</li>
+<li> Transmission rate (how long it takes to get the disease) </li>
+</ul>
+</li>
+<li> Variables to control agent actions (most can be enabled/disabled by the user):
+<ul>
+<li> Speed (how fast the agent moves) </li>
+<li> Is there another agent in the vision range </li>
+<li> The direction of the agent in vision range </li>
+<li> The distance to the agent in vision range </li>
+<li> Is the agent in vision visibly infected </li>
+<li> Location of food supply </li>
+<li> Location of water supply </li>
+<li> How many infected people there are </li>
+<li> Current agent position </li>
+<li> Current agent hunger </li>
+<li> Current agent thirst </li>
+</ul>
+</li>
+</ul>
+
+There is currently only one action the agents can take which will be:
+<ul>
+<li> Move in a direction (x, y) </li>
+</ul>
+
+<h3><strong id="ProposalGantt">Gantt Chart</strong></h3>
+
+<img src="Resources/Gantt Chart.png" alt="Gantt chart diagram"> 
+
+<i> Fig 3 - Gantt chart diagram for developing proposed system </i>
+
+<h3><strong>Citations</strong></h3>
+
+<ol>
+<li> Mehlmann-Wicks, J. (2022) Covid-19: Impact of the pandemic on healthcare delivery, The British Medical Association is the trade union and professional body for doctors in the UK. British Medical Association. Available at: https://www.bma.org.uk/advice-and-support/covid-19/what-the-bma-is-doing/covid-19-impact-of-the-pandemic-on-healthcare-delivery (Accessed: February 2, 2023). </li>
+<li> Daly, M., Sutin, A. and Robinson, E. (2020) “Longitudinal changes in mental health and the COVID-19 pandemic: Evidence from the UK household longitudinal study.” Available at: https://doi.org/10.31234/osf.io/qd5z7. </li>
+<li> Lombardelli, C. (2022) Covid and the UK economy - speech by Clare Lombardelli, chief economic advisor, HM Treasury, GOV.UK. Available at: https://www.gov.uk/government/speeches/covid-and-the-uk-economy-speech-by-clare-lombardelli-chief-economic-advisor-hm-treasury (Accessed: February 2, 2023). </li>
+<li> Shrestha, N. et al. (2020) “The impact of covid-19 on Globalization,” One Health, 11, p. 100180. Available at: https://doi.org/10.1016/j.onehlt.2020.100180. </li>
+<li> He, B. et al. (2021) “Effectiveness and resource requirements of test, Trace and isolate strategies for Covid in the UK,” Royal Society Open Science, 8(3). Available at: https://doi.org/10.1098/rsos.201491. </li>
+<li> PLE: A reinforcement learning environment¶ (2016) PLE: A Reinforcement Learning Environment - PyGame Learning Environment 0.1.dev1 documentation. Available at: https://pygame-learning-environment.readthedocs.io/en/latest/ (Accessed: February 2, 2023). </li>
+<li>Baker, B., Kanitscheider, I., Markov, T., Wu, Y., Powell, G., McGrew, B. and Mordatch, I., 2019. Emergent tool use from multi-agent autocurricula. arXiv preprint arXiv:1909.07528.</li>
+<li> UK Health Security Agency (2020) The R value and growth rate, GOV.UK. Available at: https://www.gov.uk/guidance/the-r-value-and-growth-rate (Accessed: February 3, 2023).</li>
 </ol>
 
 <h2 id="Era1"><strong>Era 1: Deciding which AI to use (Research)</strong></h2>
@@ -80,7 +182,7 @@ The custom distribution included a module named "brain" which was a neural netwo
 
 After initial research into this library I made the decision to use it for the full project. This was because it was very easy to use and had a few well thought out youtube tutorials to help me.
 
-<h3 id="Era1Citations">Citations</h3>
+<h3 id="Era1Citations"><strong>Citations</strong></h3>
 
 <ol>
 <li>“Home¶,” Home - PyGame Learning Environment 0.1.dev1 documentation. [Online]. Available: https://pygame-learning-environment.readthedocs.io/en/latest/user/home.html. [Accessed: 13-Feb-2023].</li>
@@ -94,18 +196,21 @@ After initial research into this library I made the decision to use it for the f
 <li>AndreaCatania, “Andreacatania/Godot at brain,” GitHub. [Online]. Available: https://github.com/AndreaCatania/godot/tree/brain. [Accessed: 20-Feb-2023].</li>
 </ol>
 
-<h2 id="Era2"><strong>Era 2: Developing the agents (practical)</strong></h2>
+<h2 id="Era2"><strong>Era 2: Developing the environment and spawning agents (practical)</strong></h2>
 
 <h3 id="Era2Changes"><strong>Changes made</strong></h3>
 <ul>
 <li>Developed the individual agent classes for the project</li>
-<li>Developed the agent neural network class</li>
 <li>Developed the functionality to spawn in agents</li>
 <li>Developed the functionality to kill agents</li>
+<li>Developed the environment the agents will live in</li>
+<li>Developed the functionality to move the agents</li>
+<li>Developed the functionality of food and water</li>
+<li>Developed the functionality of the agents eating and drinking</li>
 </ul>
 
 <h3 id="Era2Intro"><strong>Introduction to era</strong></h3>
-The main goal of this era was to get the individual agents into the project and get them moving in the space. This meant I had to develop an agent class which I could instantiate multiple times to make the spawning and controlling of the agents easier. This class was a very important part of the project as the genetic algorithm had nothing to work off if there was no neural net. 
+The main goal of this era was to get the individual agents into the project and get them moving in the space. This meant I had to develop an agent class which I could instantiate multiple times to make the spawning and controlling of the agents easier. This was important as it would give me all the factors I needed to feed into the neural network.
 
 The agent class was also responsible for the movement of the agents. This would have to be controlled by a kinematic body however I wanted all the code to be in one GDscript file to make talking to the individual agents easier.
 
@@ -205,9 +310,11 @@ if spawnpos.x > get_viewport_rect().size.x - step.x:
 ```
 
 Once this system was incorporated the spawned in agents looked like this on the grid:
+
 <img src="Resources/AgentsOnGrid.png" alt="Agents Lined Up in a Grid">
 
 And here is another photo proving that the grid system dynamically changes with the amount of agents spawned (60 vs 200):
+
 <img src="Resources/200Agents.png" alt="Agents Lined Up in a Grid">
 
 The full code for the spawning of the agents is here:
@@ -235,10 +342,52 @@ func spawnagents():
 ```
 
 Finally for a bit of fun I got the agents to spawn in and move via Brownian motion. This means that the agents will move in a completely random direction which can change every time the system runs through the loop. Here's a gif of the agents moving in Brownian motion:
+
 <img src="Resources/BrownianMotion.gif" alt="Agents Moving in Brownian Motion">
 
-<h3 id="Era2Stage3"><strong>3: Spawning in food and water systems</strong></h3>
+<h3 id="Era2Stage3"><strong>3: Developing the environment (food, water and walls)</strong></h3>
+
+The next step was to develop the environment further, this meant adding walls, food and water. I also implemented the food and water systems so that the agents could eat and drink aswell as die from lack of food and water. I also implemented dynamic spawning of the walls seen in the gif and pictures in the previous section. The walls were really important to the development of the project as it meant that the agents could not go off the screen and would be forced to stay within the environment. 
+
+All of the objects added to the environment were made as a scene file and then instantiated in the environment controller. This meant that it could be easily changed for evironment size and the number of food and water points you want. Both the food and water points were given a simple 1 colour texture to make them stand out against the background and make it obvious what they are. The walls were also given a simple black texture giving a nice border to the environment while also making the bounds obvious.
+
+To spawn the walls I made a few lists to store the positions of each wall and the rotation which they should be spawned in, this allowed me to both the vertical and horizontal walls using one prefab. The code to set up the spawn locations is as follows:
+```
+# Sets the locations for all the walls to go to
+func declarewallstarts():
+	wallStarts.append(Vector2(0, get_viewport_rect().size.y/2)) # Left of screen
+	wallStarts.append(Vector2(get_viewport_rect().size.x, get_viewport_rect().size.y/2)) # Right of screen
+	wallStarts.append(Vector2(get_viewport_rect().size.x/2, 0)) # Top of screen
+	wallStarts.append(Vector2(get_viewport_rect().size.x/2, get_viewport_rect().size.y)) # Bottom of screen
+	wallRotations = [0, 0, 90, 90] # Rotation of each wall (0 = vertical, 90 = horizontal)
+```
+
+This meant it was really easy to spawn the walls in the environment:
+```
+var wallHolder = preload("res://Prefabs/Wall.tscn")
+# Spawn in the 4 external walls to ensure the Agents cant escape
+func spawnwalls():
+	declarewallstarts()
+	for i in range(4):
+		var temp = wallHolder.instance()
+		self.add_child(temp)
+		temp.movetostartpos(wallStarts[i].x, wallStarts[i].y, wallRotations[i])
+```
 
 <h3 id="Era2Stage4"><strong>4: Implementing Infection systems and spawning infector</strong></h3>
 
 <h3 id="Era2Stage5"><strong>5: Moving variable storage to globals</strong></h3>
+
+<h3 id="Era2Stage6"><strong>6: Getting other agent distances and optimising</strong></h3>
+
+<h2 id="Era3"><strong>Era3: Changing AI methodology ... Again (Research)</strong></h2>
+
+<h3 id="Era3Changes"><strong>Changes made</strong></h3>
+<ul>
+<li> Changed the AI methodology to a NEAT algorithm by Paul Straberger </li>
+</ul>
+
+<h3 id="Era3Intro"><strong>Introduction to era</strong></h3>
+While trying to develop the neural network portion of the agents I ran into a bunch of issues with “Andrea Catania's" neural network library, this was mostly again down to lack of documentation on the development of the neural net. Luckily while researching the issues I came across a comment by Paul Straberger on a youtube video. The comment linked to a github page which contained a NEAT algorithm Paul had developed. This instantly drew my attention as NEAT is far better at this kind of task then a generic genetic algorithm. Something that also drew my attention was the fact that Paul had a whole wiki detailing how to do everything with the NEAT algorithm. This meant that I could easily implement the NEAT algorithm into my project and hopefully get it working.
+
+<h3 id="Era3Stage1"><strong>1: What is NEAT?</strong></h3>
