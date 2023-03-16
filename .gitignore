@@ -131,3 +131,4 @@ dmypy.json
 # Godot
 godot-3.2-stable/
 GodotAIGym/
+Godot Project/export_presets.cfg
