@@ -132,3 +132,4 @@ dmypy.json
 godot-3.2-stable/
 GodotAIGym/
 Godot Project/export_presets.cfg
+QRCode.py
