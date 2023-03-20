@@ -94,12 +94,12 @@ func food_water(delta):
 		currentWater = currentWater - delta
 
 func decide_action():
-	var awayFromAgentPriority = ((((globals.numberOfAgents/len(globals.infected))*agentData[0]) + ((globals.infectionDistance/closestAgentDistance)*agentData[1])) / 2)
-	var awayFromInfectedPriority = (globals.infectionDistance/closestInfectedDistance)*agentData[2]
-	var towardsFoodPriority = (((1 - (globals.infectedInFeed/globals.numberOfAgents)*agentData[3])+((globals.feedDistance/distanceToFood)*agentData[4])+((globals.maxFood/currentFood)*agentData[5]))/3)
-	var towardsWaterPriority = (((1 - (globals.infectedInWater/globals.numberOfAgents)*agentData[6])+((globals.feedDistance/distanceToWater)*agentData[7])+((globals.maxWater/currentWater)*agentData[8]))/3)
-	var moveInDirectionPriority = (1/0.5)*agentData[9] 
-	var stopPriority = (1/0.5)*agentData[10]
+	var awayFromAgentPriority = (((1-(len(globals.infected)/globals.numberOfAgents))*agentData[0]) + ((1-(closestAgentDistance/globals.infectionDistance))*agentData[1])) / 2
+	var awayFromInfectedPriority = (1-(closestInfectedDistance/globals.infectionDistance))*agentData[2]
+	var towardsFoodPriority = (((1-(globals.infectedInFeed/globals.numberOfAgents))*agentData[3])+(1-(globals.feedDistance/distanceToFood)*agentData[4])+((1-(currentFood/globals.maxFood))*agentData[5]))/3
+	var towardsWaterPriority = (((1-(globals.infectedInWater/globals.numberOfAgents))*agentData[6])+(1-(globals.feedDistance/distanceToWater)*agentData[7])+((1-(currentWater/globals.maxWater))*agentData[8]))/3
+	var moveInDirectionPriority = (1-(0.5/1))*agentData[9] 
+	var stopPriority = (1-(0.5/1))*agentData[10]
 	
 	priorities = [awayFromAgentPriority, awayFromInfectedPriority, towardsFoodPriority, towardsWaterPriority, moveInDirectionPriority, stopPriority]
 	var bestPriority = 0

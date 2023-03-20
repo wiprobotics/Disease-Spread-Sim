@@ -38,13 +38,13 @@ var randomiseFoodWater = true
 # Enables or disables the food functionality in the environment and agents
 var foodEnabled = true
 # The maximum amount of food an agent can have, basically = seconds as food goes down with time
-var maxFood = 40 
+var maxFood = 25
 # The minimum amount of food an agent can have, basically = seconds as food goes down with time
 var minFood = 20 
 # Enables or disables the water functionality in the environment and agents
 var waterEnabled = true
 # The maximum amount of water an agent can have, basically = seconds as water goes down with time
-var maxWater = 40
+var maxWater = 25
 # The minimum amount of water an agent can have, basically = seconds as water goes down with time
 var minWater = 20
 # The distance at which the agents may feed and water
