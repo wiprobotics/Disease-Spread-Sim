@@ -22,7 +22,7 @@ func end_epoch():
 	geneticController.end_epoch()
 	
 func _process(delta):
-	timerLabel.text = str(gameTimer.time_left)
+	timerLabel.text = str(round(gameTimer.time_left))
 	agentsLabel.text = (str(len(globals.agents)) + "/" + (str(globals.numberOfAgents)))
 	infectedLabel.text = str(len(globals.infected) - 1)
 	epochLabel.text = str(globals.epochsRun)
