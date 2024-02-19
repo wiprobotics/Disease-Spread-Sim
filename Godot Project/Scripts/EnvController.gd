@@ -6,14 +6,17 @@ var firstRun = true
 var rng = RandomNumberGenerator.new()
 var feedData = []
 
+# Load all the prefabs for all the items the system will spawn in
 var agentHolder = preload("res://Prefabs/Agent.tscn")
 var wallHolder = preload("res://Prefabs/Wall.tscn")
 var foodHolder = preload("res://Prefabs/Food Bank.tscn")
 var waterHolder = preload("res://Prefabs/Watering Hole.tscn")
 var infectorHolder = preload("res://Prefabs/Infector.tscn")
 
+# Get the globals script
 onready var globals = get_tree().current_scene.get_node("Global")
 
+# Spawn in all the prefabs needed for a simulation
 func instance_environment(randomMultipliers, feedMultipliers):
 	if globals.foodEnabled == true:
 		spawnfood()
@@ -21,9 +24,11 @@ func instance_environment(randomMultipliers, feedMultipliers):
 		spawnwater()
 	if globals.infectorEnabled == true:
 		spawninfector()
-	spawnagents(randomMultipliers, feedMultipliers)
+	if globals.spawnAgents == true:
+		spawnagents(randomMultipliers, feedMultipliers)
 	spawnwalls()
 
+# Spawn all the agents needed for the simulation, feedMultipliers is actually the data array
 func spawnagents(randomMultipliers, feedMultipliers):
 	noAgents = globals.numberOfAgents
 	# Map out a grid to spawn the agents into
@@ -41,6 +46,7 @@ func spawnagents(randomMultipliers, feedMultipliers):
 		globals.agentBrains.append(agentBrain)
 		globals.notInfected.append(agent)
 		self.add_child(agent)
+		# Randomise the variables in the data array if randomMultipliers is true
 		if randomMultipliers == true:
 			rng.randomize()
 			feedData = [rng.randf_range(0, 100), rng.randf_range(0, 100), rng.randf_range(0, 100), rng.randf_range(0, 100), 
@@ -53,7 +59,8 @@ func spawnagents(randomMultipliers, feedMultipliers):
 		if spawnpos.x > get_viewport_rect().size.x - step.x:
 			spawnpos.x = step.x
 			spawnpos.y = spawnpos.y + step.y
-			
+		
+# Spawn in walls to contain the agents
 func spawnwalls():
 	# Spawn in the 4 external walls to ensure the Agents cant escape
 	declarewallstarts()
@@ -62,6 +69,7 @@ func spawnwalls():
 		self.add_child(temp)
 		temp.movetostartpos(wallStarts[i].x, wallStarts[i].y, wallRotations[i])
 		
+# Spawn in the food bank
 func spawnfood():
 	var food = foodHolder.instance()
 	self.add_child(food)
@@ -69,6 +77,7 @@ func spawnfood():
 	food.movetostartpos(spawnpos.x, spawnpos.y, 0)
 	globals.foodLocation = spawnpos
 	
+# Spawn in the watering hole
 func spawnwater():
 	var water = waterHolder.instance()
 	self.add_child(water)
@@ -76,6 +85,7 @@ func spawnwater():
 	water.movetostartpos(spawnpos.x, spawnpos.y, 0)
 	globals.waterLocation = spawnpos
 	
+# Spawn the initial infector
 func spawninfector():
 	var infector = infectorHolder.instance()
 	self.add_child(infector)

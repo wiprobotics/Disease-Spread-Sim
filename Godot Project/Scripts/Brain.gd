@@ -93,6 +93,7 @@ func food_water(delta):
 	if globals.waterEnabled == true:
 		currentWater = currentWater - delta
 
+# A bunch of maths to work out which action to take, for a better understanding of the maths look at the poster
 func decide_action():
 	var awayFromAgentPriority = (((1-(len(globals.infected)/globals.numberOfAgents))*agentData[0]) + ((1-(closestAgentDistance/globals.infectionDistance))*agentData[1])) / 2
 	var awayFromInfectedPriority = (1-(closestInfectedDistance/globals.infectionDistance))*agentData[2]
@@ -101,6 +102,7 @@ func decide_action():
 	var moveInDirectionPriority = (1-(0.5/1))*agentData[9] 
 	var stopPriority = (1-(0.5/1))*agentData[10]
 	
+	# Stores an array of the priorities
 	priorities = [awayFromAgentPriority, awayFromInfectedPriority, towardsFoodPriority, towardsWaterPriority, moveInDirectionPriority, stopPriority]
 	var bestPriority = 0
 	var count = 0
@@ -110,9 +112,11 @@ func decide_action():
 			bestPriority = priority
 			outputcount = count
 		count = count + 1
-		
+	
+	# Runs the action controller state machine to change state
 	AC.change_state(outputcount, closestAgent, closestInfected)
 
+# Runs every frame
 func _process(delta):
 	if infected == false:
 		agentData[globals.scorePosition] = agentData[globals.scorePosition] + delta
